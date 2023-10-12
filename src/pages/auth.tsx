@@ -1,4 +1,9 @@
-export default function Login() {
+import LoginForm from '@/components/auth/LoginForm'
+import RegisterForm from '@/components/auth/RegisterForm'
+import Button from '@/components/base/Button'
+import { useState } from 'react';
+export default function Auth() {
+  const [isLogin, setIsLogin] = useState<boolean>(true)
   return (
     <div className="bg-gray-900 ">
       <div className="flex min-h-screen items-center justify-center">
@@ -15,27 +20,17 @@ export default function Login() {
             </svg>
 
             <h1 className="text-white text-2xl">Welcome To Twitter!</h1>
-            <input
-              className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
-              placeholder="Email or Username"
-              type="email"
-              name="Email or Username"
-              id=""
-            />
-            <input
-              className="w-full p-2 bg-gray-900 text-white rounded-md border border-gray-700 "
-              placeholder="Password "
-              type="password"
-              name="Password"
-              id=""
-            />
-            <button className="w-full p-2 bg-gray-50 rounded-full font-bold text-gray-900 border border-gray-700 ">Login</button>
+            { isLogin && <LoginForm />}
+            { !isLogin && <RegisterForm />}
+            <Button className="w-full p-2 bg-gray-50 rounded-full font-bold text-gray-900 border border-gray-700 ">
+              {isLogin ? 'Login' : 'Register'}
+            </Button>
 
             <p>
-              Don't have an account ? 
-              <a className="font-semibold text-white" href="">
-                 {" "}Register
-              </a>
+              {isLogin ? "Don't have an account ? " : 'Already have an account ? '}
+              <button onClick={() => setIsLogin(!isLogin)} className="font-semibold text-white">
+                {" "}{isLogin ?  'Create an account.' : 'Login' }
+              </button>
             </p>
           </div>
         </div>
