@@ -22,10 +22,6 @@ export default function Auth() {
             <h1 className="text-white text-2xl">Welcome To Twitter!</h1>
             { isLogin && <LoginForm />}
             { !isLogin && <RegisterForm />}
-            <Button className="w-full p-2 bg-gray-50 rounded-full font-bold text-gray-900 border border-gray-700 ">
-              {isLogin ? 'Login' : 'Register'}
-            </Button>
-
             <p>
               {isLogin ? "Don't have an account ? " : 'Already have an account ? '}
               <button onClick={() => setIsLogin(!isLogin)} className="font-semibold text-white">
