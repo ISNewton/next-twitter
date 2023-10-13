@@ -1,5 +1,5 @@
 {
-  "baseUrl" : "localhost:3001",
+  "proxy" : "localhost:3001",
   "name": "next-twitter",
   "version": "0.1.0",
   "private": true,
