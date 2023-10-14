@@ -1,9 +1,23 @@
 import LoginForm from '@/components/auth/LoginForm'
 import RegisterForm from '@/components/auth/RegisterForm'
 import Button from '@/components/base/Button'
+import LoadingPage from '@/components/home/LoadingPage';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 export default function Auth() {
   const [isLogin, setIsLogin] = useState<boolean>(true)
+  const session = useSession()
+  const router = useRouter()
+
+  if(session.status === 'loading') {
+    return <LoadingPage />
+  }
+  if(session.status === 'authenticated') {
+    router.push('/')
+    return
+  }
+
   return (
     <div className="bg-gray-900 ">
       <div className="flex min-h-screen items-center justify-center">

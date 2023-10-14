@@ -4,15 +4,17 @@ import MainContent from "@/components/MainContent";
 import RightSide from "@/components/RightSide";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import LoadingPage from '@/components/home/LoadingPage'
 
 export default function Home() {
   const session = useSession()
   const router = useRouter()
   if(session.status == 'loading') {
-    return <p>loading</p>
+    return <LoadingPage />
   }
   if(session.status == 'unauthenticated') {
-    return router.push('/auth')
+     router.push('/auth')
+     return
   }
   return (
     <div className="h-screen overflow-x-hidden flex items-center justify-center">
