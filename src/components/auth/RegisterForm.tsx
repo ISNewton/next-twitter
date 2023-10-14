@@ -7,6 +7,7 @@ import client from "@/libs/client";
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { ServerValidationErrors } from "@/types/validation";
+import { signIn } from "next-auth/react";
 
 export default function RegisterForm() {
     const initValues = {
@@ -23,10 +24,15 @@ export default function RegisterForm() {
     >([]);
 
     const mutation = useMutation({
-        mutationFn: async (data) => {
+        mutationFn: async (data:RegisterFormType) => {
             setFormErrors([]);
             try {
                 const res = await client.post("auth/signup", data);
+                signIn('credentials' , {
+                    username:data.username ,
+                    password:data.password,
+                    redirect:false
+                })
                 return res;
             } catch (e) {
                 const errors = e as AxiosError;
