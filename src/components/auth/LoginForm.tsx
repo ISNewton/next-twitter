@@ -7,6 +7,7 @@ import { useMutation } from "react-query";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { ServerValidationErrors } from "@/types/validation";
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
     const [formErrors, setFormErrors] = useState<
@@ -15,7 +16,12 @@ export default function LoginForm() {
     const mutation = useMutation({
         mutationFn: async (data: typeof initValues) => {
             try {
-                await client.post("auth/login", data);
+                // await client.post("auth/login", data);
+                await signIn('credentials' , {
+                    username:data.username,
+                    password:data.password,
+                    redirect:false
+                })
             } catch (e) {
                 const errors = e as AxiosError;
                 console.log(errors.response?.data)

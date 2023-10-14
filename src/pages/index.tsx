@@ -2,8 +2,12 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import MainContent from "@/components/MainContent";
 import RightSide from "@/components/RightSide";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const session = useSession()
+  console.log(session)
+  session.data
   return (
     <div className="h-screen overflow-x-hidden flex items-center justify-center">
       <div className="bg-black pt-20">
