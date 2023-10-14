@@ -1,10 +1,13 @@
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
+    const router = useRouter();
     async function logout() {
         await signOut({
             redirect: false,
         });
+        router.push("/auth");
     }
 
     return (
@@ -23,8 +26,8 @@ export default function Navbar() {
                         viewBox="0 0 24 24"
                     >
                         <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             strokeWidth="2"
                             d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10M9 21h6"
                         />
@@ -38,8 +41,8 @@ export default function Navbar() {
                     <svg
                         className="mr-4 h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         strokeWidth="2"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -55,8 +58,8 @@ export default function Navbar() {
                     <svg
                         className="mr-4 h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         strokeWidth="2"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -72,8 +75,8 @@ export default function Navbar() {
                     <svg
                         className="mr-4 h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         strokeWidth="2"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -89,8 +92,8 @@ export default function Navbar() {
                     <svg
                         className="mr-4 h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         strokeWidth="2"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -106,8 +109,8 @@ export default function Navbar() {
                     <svg
                         className="mr-4 h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         strokeWidth="2"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -123,8 +126,8 @@ export default function Navbar() {
                     <svg
                         className="mr-4 h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         strokeWidth="2"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -141,8 +144,8 @@ export default function Navbar() {
                     <svg
                         className="mr-4 h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         strokeWidth="2"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -158,8 +161,8 @@ export default function Navbar() {
                     <svg
                         className="mr-4 h-6 w-6"
                         fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         strokeWidth="2"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

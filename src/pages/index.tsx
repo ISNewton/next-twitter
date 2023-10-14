@@ -3,10 +3,17 @@ import Navbar from "@/components/Navbar";
 import MainContent from "@/components/MainContent";
 import RightSide from "@/components/RightSide";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const session = useSession()
-  console.log(session)
+  const router = useRouter()
+  if(session.status == 'loading') {
+    return <p>loading</p>
+  }
+  if(session.status == 'unauthenticated') {
+    return router.push('/auth')
+  }
   return (
     <div className="h-screen overflow-x-hidden flex items-center justify-center">
       <div className="bg-black pt-20">

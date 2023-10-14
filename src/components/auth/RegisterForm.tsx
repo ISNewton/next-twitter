@@ -8,8 +8,10 @@ import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { ServerValidationErrors } from "@/types/validation";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+    const router = useRouter()
     const initValues = {
         name: "",
         email: "",
@@ -28,16 +30,25 @@ export default function RegisterForm() {
             setFormErrors([]);
             try {
                 const res = await client.post("auth/signup", data);
-                signIn('credentials' , {
+                const signInResponse = await signIn('credentials' , {
                     username:data.username ,
                     password:data.password,
                     redirect:false
                 })
+                if(signInResponse?.ok) {
+                    router.push('/')
+                }
                 return res;
             } catch (e) {
                 const errors = e as AxiosError;
                 setFormErrors(errors.response?.data?.message );
             }
+        },
+        onSuccess(data, variables, context) {
+            console.log('onSuccess' , data)
+        },
+        onError(error, variables, context) {
+            console.log(error)
         },
     });
 
