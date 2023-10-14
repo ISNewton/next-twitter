@@ -37,6 +37,7 @@ export default function RegisterForm() {
                 })
                 if(signInResponse?.ok) {
                     router.push('/')
+                    return
                 }
                 return res;
             } catch (e) {
