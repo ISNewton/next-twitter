@@ -2,28 +2,63 @@ import { Form, Formik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import TextInput from "../base/TextInput";
 import { z } from "zod";
-import client from '@/libs/client'
+import client from "@/libs/client";
+import { useMutation } from "react-query";
+import { AxiosError } from "axios";
+import { useState } from "react";
+import { ServerValidationErrors } from "@/types/validation";
 
 export default function LoginForm() {
+    const [formErrors, setFormErrors] = useState<
+        ServerValidationErrors<"username" | "password">[]
+    >([]);
+    const mutation = useMutation({
+        mutationFn: async (data: typeof initValues) => {
+            try {
+                await client.post("auth/login", data);
+            } catch (e) {
+                const errors = e as AxiosError;
+                console.log(errors.response?.data)
+                if(errors.response?.status == 401) {
+                    setFormErrors([{
+                        field:'username',
+                        errors:[errors.response.data?.message]
+                    }]);
+                }
+                else if(errors.response?.status == 400) {
+                    setFormErrors(errors.response?.data?.message);
+                }
+                else {
+                    console.log(errors.response)
+                }
+            }
+        },
+    });
     const initValues = {
         username: "",
         password: "",
     };
 
-    const loginFormSchema = z
-        .object({
-            username: z.string().min(3),
-            password: z.string().min(8),
-        })
+    const loginFormSchema = z.object({
+        username: z.string().min(3),
+        password: z.string().min(8),
+    });
 
     type LoginFormType = {
         username: string;
         password: string;
     };
 
+    function getServerValidationErrors(field: string): string {
+        const errorsArray = formErrors.find((e) => e.field === field);
+        if (errorsArray?.field) {
+            return errorsArray.errors[0];
+        }
+        return "";
+    }
+
     async function login(data: LoginFormType) {
-        const res = await client.post("login", data);
-        console.log(res);
+        await mutation.mutateAsync(data);
     }
     return (
         <>
@@ -41,7 +76,7 @@ export default function LoginForm() {
                             type="text"
                             onChange={form.handleChange}
                             value={form.values.username}
-                            error={form.errors.username}
+                            error={form.errors.username || getServerValidationErrors('username')}
                             touched={form.touched.username}
                         />
 
@@ -51,12 +86,15 @@ export default function LoginForm() {
                             placeholder="Password"
                             type="password"
                             onChange={form.handleChange}
-                            value={form.values.password}
+                            value={form.values.password || getServerValidationErrors('password')}
                             error={form.errors.password}
                             touched={form.touched.password}
                         />
 
-                        <button type="submit" className="btn btn-light w-full rounded-full mt-4">
+                        <button
+                            type="submit"
+                            className="btn btn-light w-full rounded-full mt-4"
+                        >
                             Login
                         </button>
                     </Form>

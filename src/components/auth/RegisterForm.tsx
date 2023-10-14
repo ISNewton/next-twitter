@@ -6,29 +6,9 @@ import { useMutation, useQuery } from "react-query";
 import client from "@/libs/client";
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
+import { ServerValidationErrors } from "@/types/validation";
 
 export default function RegisterForm() {
-    const [formErrors, setFormErrors] = useState<object[]>([]);
-    const mutation = useMutation({
-        mutationFn: async (data) => {
-            try {
-                const res = await client.post("auth/signup");
-                console.log('success')
-                return res
-            }
-            catch (e) {
-                const errors = e as AxiosError
-                // console.log('error' , errors.response)
-                setFormErrors((errors.response?.data?.message) as [])
-                console.log(errors.response?.data?.message)
-
-            }
-            // console.log(data);
-
-        },
-
-    });
-
     const initValues = {
         name: "",
         email: "",
@@ -36,6 +16,24 @@ export default function RegisterForm() {
         password: "",
         passwordConfirmation: "",
     };
+    const [formErrors, setFormErrors] = useState<
+        ServerValidationErrors<
+            "name" | "email" | "password" | "passwordConfirmation" | "usename"
+        >[]
+    >([]);
+
+    const mutation = useMutation({
+        mutationFn: async (data) => {
+            setFormErrors([]);
+            try {
+                const res = await client.post("auth/signup", data);
+                return res;
+            } catch (e) {
+                const errors = e as AxiosError;
+                setFormErrors(errors.response?.data?.message );
+            }
+        },
+    });
 
     const registerFormSchema = z
         .object({
@@ -58,87 +56,98 @@ export default function RegisterForm() {
         passwordConfirmation: string;
     };
 
+    function getServerValidationErrors(field: string): string {
+        const errorsArray = formErrors.find((e) => e.field === field);
+        if (errorsArray?.field) {
+            return errorsArray.errors[0];
+        }
+        return "";
+    }
+
     async function register(data: RegisterFormType) {
         await mutation.mutateAsync(data);
 
-        console.log('registering...')
+        console.log("registering...");
     }
 
     return (
-
         <>
-            {/* { formErrors && formErrors.map(e => { */}
-            {/*     return <p>{[e]}</p> */}
-
-            {/* })} */}
             <Formik
                 initialValues={initValues}
                 validationSchema={toFormikValidationSchema(registerFormSchema)}
                 onSubmit={register}
             >
                 {(form) => (
-                <Form>
-                    <TextInput
-                        name="name"
-                        className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
-                        placeholder="Full name"
-                        type="text"
-                        onChange={form.handleChange}
-                        value={form.values.name}
-                        error={form.errors.name}
-                        touched={form.touched.name}
-                    />
+                    <Form>
+                        <TextInput
+                            name="name"
+                            className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
+                            placeholder="Full name"
+                            type="text"
+                            onChange={form.handleChange}
+                            value={form.values.name}
+                            error={form.errors.name || getServerValidationErrors("name")}
+                            touched={form.touched.name}
+                        />
 
-                    <TextInput
-                        name="email"
-                        className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
-                        placeholder="Email"
-                        type="email"
-                        onChange={form.handleChange}
-                        value={form.values.email}
-                        error={form.errors.email}
-                        touched={form.touched.email}
-                    />
+                        <TextInput
+                            name="email"
+                            className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
+                            placeholder="Email"
+                            type="email"
+                            onChange={form.handleChange}
+                            value={form.values.email}
+                            error={form.errors.email || getServerValidationErrors("email")}
+                            touched={form.touched.email}
+                        />
 
-                    <TextInput
-                        name="username"
-                        className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
-                        placeholder="Twitter Username"
-                        type="text"
-                        onChange={form.handleChange}
-                        value={form.values.username}
-                        error={form.errors.username}
-                        touched={form.touched.username}
-                    />
+                        <TextInput
+                            name="username"
+                            className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
+                            placeholder="Twitter Username"
+                            type="text"
+                            onChange={form.handleChange}
+                            value={form.values.username}
+                            error={
+                                form.errors.username || getServerValidationErrors("username")
+                            }
+                            touched={form.touched.username}
+                        />
 
-                    <TextInput
-                        name="password"
-                        className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
-                        placeholder="Password"
-                        type="password"
-                        onChange={form.handleChange}
-                        value={form.values.password}
-                        error={form.errors.password}
-                        touched={form.touched.password}
-                    />
+                        <TextInput
+                            name="password"
+                            className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
+                            placeholder="Password"
+                            type="password"
+                            onChange={form.handleChange}
+                            value={form.values.password}
+                            error={
+                                form.errors.password || getServerValidationErrors("password")
+                            }
+                            touched={form.touched.password}
+                        />
 
-                    <TextInput
-                        name="passwordConfirmation"
-                        className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
-                        placeholder="Confirm password"
-                        type="password"
-                        onChange={form.handleChange}
-                        value={form.values.passwordConfirmation}
-                        error={form.errors.passwordConfirmation}
-                        touched={form.touched.passwordConfirmation}
-                    />
-                    <button
-                        type="submit"
-                        className="btn btn-light w-full rounded-full mt-4"
-                    >
-                        Register
-                    </button>
-                </Form>
+                        <TextInput
+                            name="passwordConfirmation"
+                            className="w-full p-2 bg-gray-900 rounded-md text-white  border border-gray-700 focus:border-blue-700"
+                            placeholder="Confirm password"
+                            type="password"
+                            onChange={form.handleChange}
+                            value={form.values.passwordConfirmation}
+                            error={
+                                form.errors.passwordConfirmation ||
+                                getServerValidationErrors("passwordConfirmation")
+                            }
+                            touched={form.touched.passwordConfirmation}
+                        />
+                        <button
+                            type="submit"
+                            className="btn btn-light w-full rounded-full mt-4"
+                            disabled={mutation.isLoading}
+                        >
+                            Register
+                        </button>
+                    </Form>
                 )}
             </Formik>
         </>
