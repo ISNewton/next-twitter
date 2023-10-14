@@ -8,35 +8,43 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { ServerValidationErrors } from "@/types/validation";
 import { signIn } from "next-auth/react";
+import Error from "next/error";
+import { useRouter } from "next/router";
 
 export default function LoginForm() {
+    const router = useRouter()
     const [formErrors, setFormErrors] = useState<
         ServerValidationErrors<"username" | "password">[]
     >([]);
     const mutation = useMutation({
         mutationFn: async (data: typeof initValues) => {
             try {
-                // await client.post("auth/login", data);
-                await signIn('credentials' , {
+                const response = await signIn('credentials' , {
                     username:data.username,
                     password:data.password,
                     redirect:false
                 })
-            } catch (e) {
-                const errors = e as AxiosError;
-                console.log(errors.response?.data)
-                if(errors.response?.status == 401) {
+                if(response?.status == 200) {
+                    router.push('/')
+                }
+                if(response?.status == 401) {
                     setFormErrors([{
                         field:'username',
-                        errors:[errors.response.data?.message]
+                        errors:[response.error ?? '']
                     }]);
                 }
-                else if(errors.response?.status == 400) {
-                    setFormErrors(errors.response?.data?.message);
+
+                else if(response?.status == 400) {
+                    setFormErrors([{
+                        field:'username',
+                        errors:[response.error ?? '']
+                    }]);
                 }
                 else {
-                    console.log(errors.response)
+                    console.log(response)
                 }
+            } catch (e) {
+                console.log('lgon error' , e)
             }
         },
     });

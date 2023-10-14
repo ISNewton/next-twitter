@@ -1,7 +1,7 @@
 import nextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import client from "@/libs/client";
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 export default nextAuth({
   providers: [
@@ -27,7 +27,9 @@ export default nextAuth({
           });
         }
         catch(e) {
-          return
+
+          console.log('error' , e.response)
+          throw new AxiosError(e.response.data.message , e.response.data.statusCode)
         }
 
         const user = response.data;
@@ -49,8 +51,6 @@ export default nextAuth({
       return { ...token, ...user };
     },
     async session({ session, token, user }) {
-      console.log('session')
-      console.log(token)
       session.user = token;
       return session;
     },
